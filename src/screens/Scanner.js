@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { PermissionsAndroid } from 'react-native';
+import * as ImagePicker from 'react-native-image-picker';
 import * as Service from '../services';
 
 export default function Scanner() {
 
     const [hasPermission, setHasPermission] = useState(null);
-    const [scanned, setScanned] = useState(false);
 
     useEffect(() => {
         (async () => {
-            await BarCodeScanner.requestPermissionsAsync()
-                .then(({ status }) => {
-                    setHasPermission(status === 'granted');
-                });
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                setHasPermission(true);
+            } else {
+                setHasPermission(false);
+            }
         })();
     }, []);
 
-    const handleBarCodeScanned = ({ data }) => {
-        setScanned(true);
-        console.log(data);
-        // (async () => {
-        //     await Service.getDataShipment(data.id)
-        //         .then((result) => {
-        //             console.log(result);
-        //         });
-        // })();
+    const handleBtnLaunchCamera = async () => {
+        await ImagePicker.launchCamera({
+            mediaType: 'photo',
+            cameraType: 'back',
+            saveToPhotos: false,
+            includeBase64: true,
+        }).then((result) => {
+            console.log(result);
+        });
     };
 
     if (hasPermission === null) {
@@ -51,27 +54,11 @@ export default function Scanner() {
                 backgroundColor: '#fff',
             }}
         >
-            {scanned ? (
-                <TouchableOpacity
-                    onPress={() => { setScanned(false); }}
-                >
-                    <Text>Volver a escanear codigo QR</Text>
-                </TouchableOpacity>
-            ) : (
-                <View>
-                    <BarCodeScanner
-                        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                        barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                        style={{
-                            height: 300,
-                        }}
-                    />
-                    <TouchableOpacity style={{ backgroundColor: 'red' }} onPress={() => { setScanned(true) }}>
-                        <Text style={{ color: 'white' }}>Volver a escanear codigo QR</Text>
-                    </TouchableOpacity>
-                </View>
-            )
-            }
+            <TouchableOpacity
+                onPress={() => { handleBtnLaunchCamera(); }}
+            >
+                <Text>Sacar foto</Text>
+            </TouchableOpacity>
         </View >
     );
 }
