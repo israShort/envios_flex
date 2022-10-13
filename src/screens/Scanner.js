@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import { PermissionsAndroid } from 'react-native';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Service from '../services';
+import { API_KEY } from '../config';
+import axios from 'axios';
 
 export default function Scanner() {
 
@@ -21,7 +21,34 @@ export default function Scanner() {
         });
 
         if (result.base64) {
-            let img = result.base64;
+            let img = `data:image/jpeg;base64,${result.base64}`;
+
+            let body = new FormData();
+            body.append('base64Image', img);
+            body.append('language', 'spa');
+            body.append('isTable', 'true');
+            body.append('isOverlayRequired', 'true');
+
+            axios({
+                method: 'post',
+                url: 'https://api.ocr.space/parse/image',
+                data: body,
+                headers: { 'apikey': API_KEY }
+            }).then(({ data }) => {
+                // console.log(data);
+                if (data.IsErroredOnProcessing == false) {
+                    console.log(data.ParsedResults[0].ParsedText);
+                    console.log(JSON.stringify(data.ParsedResults[0].TextOverlay));
+                }
+            });
+
+            // await Service.getDataOCR(img)
+            //     .then((result) => {
+            //         console.log(result);
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //     });
         }
     };
 
@@ -34,8 +61,11 @@ export default function Scanner() {
         >
             <TouchableOpacity
                 onPress={() => { handleBtnLaunchCamera(); }}
+                style={{
+                    backgroundColor: '#DEDEDE'
+                }}
             >
-                <Text>Sacar foto</Text>
+                <Text style={{ padding: 20, textAlign: 'center' }}>Sacar foto</Text>
             </TouchableOpacity>
         </View >
     );
