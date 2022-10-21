@@ -12,7 +12,8 @@ const MainStack = ({ route }) => {
             <Stack.Screen name="Scanner" component={Scanner}
                 options={({ navigation }) => ({
                     headerTitle: 'Scanner',
-                    headerTintColor: "black"
+                    headerTintColor: "black",
+                    headerShown: false
                 })}
             />
         </Stack.Navigator>

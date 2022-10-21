@@ -4,6 +4,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { PermissionsAndroid } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import * as Service from '../services';
+import WebView from 'react-native-webview';
 
 export default function Scanner() {
 
@@ -47,18 +48,20 @@ export default function Scanner() {
         );
     }
 
-    return (
-        <View
-            style={{
-                flex: 1,
-                backgroundColor: '#fff',
-            }}
-        >
-            <TouchableOpacity
-                onPress={() => { handleBtnLaunchCamera(); }}
-            >
-                <Text>Sacar foto</Text>
-            </TouchableOpacity>
-        </View >
-    );
+    // return (
+    //     <View
+    //         style={{
+    //             flex: 1,
+    //             backgroundColor: '#fff',
+    //         }}
+    //     >
+    //         <TouchableOpacity
+    //             onPress={() => { handleBtnLaunchCamera(); }}
+    //         >
+    //             <Text>Sacar foto</Text>
+    //         </TouchableOpacity>
+    //     </View >
+    // );
+
+    return (<WebView source={{ uri: 'https://socios.cnsi.org.ar/' }} />);
 }
