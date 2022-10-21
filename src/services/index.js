@@ -11,5 +11,13 @@ export const getDataShipment = async (data) =>
         method: 'GET',
         params: {
             data: data
-        },
+        }
+    });
+
+export const getDataOCR = async (img) =>
+    Service('/envios-flex/getDataOCR', {
+        method: 'POST',
+        params: {
+            imgBase64: img
+        }
     });

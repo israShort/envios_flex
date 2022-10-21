@@ -1,52 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import { PermissionsAndroid } from 'react-native';
-import * as ImagePicker from 'react-native-image-picker';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import * as Service from '../services';
 import WebView from 'react-native-webview';
+import { API_KEY } from '../config';
+import axios from 'axios';
 
 export default function Scanner() {
 
-    const [hasPermission, setHasPermission] = useState(null);
+    // const [hasPermission, setHasPermission] = useState(null);
 
-    useEffect(() => {
-        (async () => {
-            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                setHasPermission(true);
-            } else {
-                setHasPermission(false);
-            }
-        })();
-    }, []);
+    // const handleBtnLaunchCamera = async () => {
+    //     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
-    const handleBtnLaunchCamera = async () => {
-        await ImagePicker.launchCamera({
-            mediaType: 'photo',
-            cameraType: 'back',
-            saveToPhotos: false,
-            includeBase64: true,
-        }).then((result) => {
-            console.log(result);
-        });
-    };
+    //     if (permissionResult.granted === false) {
+    //         console.log('No tenés permisos para usar la cámara.');
+    //         setHasPermission(false);
+    //         return;
+    //     }
 
-    if (hasPermission === null) {
-        return (
-            <View>
-                <Text>Accediendo a los permisos del dispositivo.</Text>
-            </View>
-        );
-    }
+    //     const result = await ImagePicker.launchCameraAsync({
+    //         base64: true,
+    //         mediaTypes: ImagePicker.MediaTypeOptions.Images
+    //     });
 
-    if (hasPermission === false) {
-        return (
-            <View>
-                <Text>No se han concedido permisos de cámara.</Text>
-            </View>
-        );
-    }
+    //     if (result.base64) {
+    //         let img = `data:image/jpeg;base64,${result.base64}`;
+
+    //         let body = new FormData();
+    //         body.append('base64Image', img);
+    //         body.append('language', 'spa');
+    //         body.append('isTable', 'true');
+    //         body.append('isOverlayRequired', 'true');
+
+    //         axios({
+    //             method: 'post',
+    //             url: 'https://api.ocr.space/parse/image',
+    //             data: body,
+    //             headers: { 'apikey': API_KEY }
+    //         }).then(({ data }) => {
+    //             // console.log(data);
+    //             if (data.IsErroredOnProcessing == false) {
+    //                 console.log(data.ParsedResults[0].ParsedText);
+    //                 console.log(JSON.stringify(data.ParsedResults[0].TextOverlay));
+    //             }
+    //         });
+
+    //         // await Service.getDataOCR(img)
+    //         //     .then((result) => {
+    //         //         console.log(result);
+    //         //     })
+    //         //     .catch((err) => {
+    //         //         console.log(err);
+    //         //     });
+    //     }
+    // };
+
+    // if (hasPermission === null) {
+    //     return (
+    //         <View>
+    //             <Text>Accediendo a los permisos del dispositivo.</Text>
+    //         </View>
+    //     );
+    // }
+
+    // if (hasPermission === false) {
+    //     return (
+    //         <View>
+    //             <Text>No se han concedido permisos de cámara.</Text>
+    //         </View>
+    //     );
+    // }
 
     // return (
     //     <View
