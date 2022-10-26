@@ -76,6 +76,9 @@ export default function Scanner() {
             >
                 <Text>Sacar foto</Text>
             </TouchableOpacity>
+            <View>
+                {/* inputs */}
+            </View>
         </View >
     );
 }
